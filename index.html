@@ -632,7 +632,7 @@
   </main>
 
   <script>
-    const questions = [
+    const baseQuestions = [
       {
         question: "Which planet is known as the Red Planet?",
         answers: ["Venus", "Mars", "Mercury", "Jupiter"],
@@ -695,6 +695,19 @@
       }
     ];
 
+    function shuffleQuestions(items) {
+      const shuffled = [...items];
+
+      for (let index = shuffled.length - 1; index > 0; index -= 1) {
+        const swapIndex = Math.floor(Math.random() * (index + 1));
+        [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+      }
+
+      return shuffled;
+    }
+
+    let questions = shuffleQuestions(baseQuestions);
+
     const questionEl = document.getElementById("question");
     const questionNumberEl = document.getElementById("question-number");
     const answersEl = document.getElementById("answers");
@@ -711,6 +724,20 @@
     let currentQuestion = 0;
     let score = 0;
     let answered = false;
+
+    function resetQuiz() {
+      questions = shuffleQuestions(baseQuestions);
+      currentQuestion = 0;
+      score = 0;
+      resultsEl.hidden = true;
+      resultsEl.classList.remove("is-celebrating");
+      quizEl.hidden = false;
+      footerNote.hidden = false;
+      renderQuestion();
+
+      const firstAnswer = document.querySelector(".answer");
+      if (firstAnswer) firstAnswer.focus();
+    }
 
     function renderQuestion() {
       const item = questions[currentQuestion];
@@ -826,18 +853,9 @@
       }
     });
 
-    document.getElementById("restart-button").addEventListener("click", () => {
-      currentQuestion = 0;
-      score = 0;
-      resultsEl.hidden = true;
-      resultsEl.classList.remove("is-celebrating");
-      quizEl.hidden = false;
-      footerNote.hidden = false;
-      renderQuestion();
-      document.querySelector(".answer").focus();
-    });
+    document.getElementById("restart-button").addEventListener("click", resetQuiz);
 
-    renderQuestion();
+    resetQuiz();
   </script>
 </body>
 </html>
